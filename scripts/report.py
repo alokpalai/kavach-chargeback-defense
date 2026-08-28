@@ -79,14 +79,19 @@ t_bin = float(cv.loc[cv.cost_inr.idxmin()].threshold)
 lo_u, hi_u, _ = optimise(yva, pva, ava)
 lo_c, hi_c, _ = optimise(yva, pva, ava, max_stepup_rate=0.10)
 
+# Round BEFORE pricing. Publishing a threshold of 0.0232 while costing it at
+# 0.02317... means anyone reproducing from the published parameters gets a
+# different number. The published params must be the ones that were used.
+t_bin, lo_u, hi_u, lo_c, hi_c = (round(v, 4) for v in (t_bin, lo_u, hi_u, lo_c, hi_c))
+
 policies = {
     "approve_everything": (approve_all, None),
     "binary_naive_0.50": (cost_three_way(yte, pte, ate, 0.50, 0.50), {"t": 0.50}),
-    "binary_cost_optimal": (cost_three_way(yte, pte, ate, t_bin, t_bin), {"t": round(t_bin, 4)}),
+    "binary_cost_optimal": (cost_three_way(yte, pte, ate, t_bin, t_bin), {"t": t_bin}),
     "three_way": (cost_three_way(yte, pte, ate, lo_u, hi_u),
-                  {"t_low": round(lo_u, 4), "t_high": round(hi_u, 4)}),
+                  {"t_low": lo_u, "t_high": hi_u}),
     "three_way_stepup_capped_10pct": (cost_three_way(yte, pte, ate, lo_c, hi_c),
-                                      {"t_low": round(lo_c, 4), "t_high": round(hi_c, 4)}),
+                                      {"t_low": lo_c, "t_high": hi_c}),
 }
 out["policies"] = {
     k: {"cost_per_10k_inr": round(c / n * 1e4),

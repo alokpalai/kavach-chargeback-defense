@@ -66,8 +66,8 @@ Held-out test split, days 155–183, never used for any fitting decision.
 | Decision | Share | Fraud rate |
 |---|---:|---:|
 | approve | 87.8% | 1.02% |
-| step-up | 10.6% | 13.32% |
-| block | 1.58% | 77.66% |
+| step-up | 10.6% | 13.33% |
+| block | 1.58% | 77.68% |
 
 ---
 

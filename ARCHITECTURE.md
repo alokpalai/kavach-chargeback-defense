@@ -65,7 +65,7 @@ No `scale_pos_weight`, no resampling. Both improve ranking metrics and corrupt t
 
 A binary policy forces every uncertain order into approve-or-decline, and a wrong decline costs a whole sale. A step-up costs a fraction of that: most genuine customers pass, most fraudsters fail. The middle band is where uncertainty belongs.
 
-This is worth **₹1,591,065 per 10,000 orders** over the same model's best binary policy — more than any feature work attempted.
+This is worth **₹1,591,618 per 10,000 orders** over the same model's best binary policy — more than any feature work attempted.
 
 ### The optimiser is constrained
 

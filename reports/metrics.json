@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-28 21:06",
+  "generated_at": "2026-08-28 21:39",
   "seed": 42,
   "dataset": {
     "source": "IEEE-CIS Fraud Detection (Kaggle)",
@@ -89,41 +89,41 @@
       }
     },
     "three_way": {
-      "cost_per_10k_inr": 2066945,
-      "saved_vs_approve_all_per_10k_inr": 3369380,
+      "cost_per_10k_inr": 2066776,
+      "saved_vs_approve_all_per_10k_inr": 3369549,
       "params": {
         "t_low": 0.0146,
         "t_high": 0.436
       }
     },
     "three_way_stepup_capped_10pct": {
-      "cost_per_10k_inr": 2158374,
-      "saved_vs_approve_all_per_10k_inr": 3277951,
+      "cost_per_10k_inr": 2157821,
+      "saved_vs_approve_all_per_10k_inr": 3278504,
       "params": {
         "t_low": 0.0232,
         "t_high": 0.436
       }
     }
   },
-  "headline_saving_per_10k_inr": 3277951,
+  "headline_saving_per_10k_inr": 3278504,
   "decision_mix_capped": [
     {
       "decision": "approve",
-      "share": 0.8782,
-      "n": 68975,
+      "share": 0.8783,
+      "n": 68987,
       "fraud_rate": 0.0102
     },
     {
       "decision": "step_up",
-      "share": 0.106,
-      "n": 8327,
-      "fraud_rate": 0.1332
+      "share": 0.1059,
+      "n": 8314,
+      "fraud_rate": 0.1333
     },
     {
       "decision": "block",
       "share": 0.0158,
-      "n": 1240,
-      "fraud_rate": 0.7766
+      "n": 1241,
+      "fraud_rate": 0.7768
     }
   ],
   "optimism_penalty": {

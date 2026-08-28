@@ -20,7 +20,7 @@ jobs:
         run: pip install -e ".[dev]"
 
       - name: Lint
-        run: ruff check src tests scripts
+        run: ruff check src tests scripts dashboard
 
       # The guard tests use synthetic fixtures on purpose: they verify the
       # splitting and windowing logic, which must hold regardless of data, and

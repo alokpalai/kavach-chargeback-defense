@@ -11,14 +11,15 @@ import time
 
 import lightgbm as lgb
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
+from sklearn.metrics import precision_recall_curve
 
 from kavach import config
 from kavach.data.load import load_raw
-from kavach.data.split import split, describe_split
+from kavach.data.split import describe_split, split
 from kavach.eval.cost_curve import sweep
 from kavach.eval.metrics import summary
 from kavach.features.base import make_xy
@@ -33,7 +34,7 @@ raw = load_raw()
 tr, va, te = split(raw)
 out["dataset"] = {
     "source": "IEEE-CIS Fraud Detection (Kaggle)",
-    "rows": int(len(raw)),
+    "rows": len(raw),
     "columns": int(raw.shape[1]),
     "span_days": round(float(raw.TransactionDT.max() - raw.TransactionDT.min()) / 86400, 1),
     "fraud_rate": round(float(raw.isFraud.mean()), 4),
@@ -110,7 +111,7 @@ out["optimism_penalty"] = {
 }
 
 # ---------------------------------------------------------------- ablations
-abl = [dict(summary(yte, pte, "detector only"), **{"verdict": "shipped"})]
+abl = [dict(summary(yte, pte, "detector only"), verdict="shipped")]
 for name, path, pq in (("+ velocity", "models/velocity.txt", "features.parquet"),
                        ("+ rings", "models/rings.txt", "features_rings.parquet")):
     try:
@@ -119,8 +120,8 @@ for name, path, pq in (("+ velocity", "models/velocity.txt", "features.parquet")
         _, _, tep = split(dfp)
         Xp, yp = make_xy(tep)
         pp = mm.predict(Xp[mm.feature_name()])
-        abl.append(dict(summary(yp.to_numpy(), pp, name), **{"verdict": "rejected - no measurable gain"}))
-    except Exception as e:  # a missing artefact must not kill the report
+        abl.append(dict(summary(yp.to_numpy(), pp, name), verdict="rejected - no measurable gain"))
+    except (OSError, ValueError, KeyError) as e:  # a missing artefact must not kill the report
         abl.append({"model": name, "error": str(e)[:120]})
 out["ablations"] = abl
 
@@ -135,7 +136,7 @@ ax.set_xscale("log"); ax.set_xlabel("block threshold"); ax.set_ylabel("cost per 
 ax.set_title("Cost of every threshold, test split"); ax.legend(); fig.tight_layout()
 fig.savefig(config.FIGURES / "cost_curve.png", dpi=140); plt.close(fig)
 
-from sklearn.metrics import precision_recall_curve
+
 pr, rc, _ = precision_recall_curve(yte, pte)
 fig, ax = plt.subplots(figsize=(7, 4.2))
 ax.plot(rc, pr, lw=1.8)

@@ -1,28 +1,28 @@
 """Step 12 ablation: does the ring layer add recall the detector cannot reach?"""
 import time
-import numpy as np
-import pandas as pd
-import lightgbm as lgb
 
+import lightgbm as lgb
+import pandas as pd
+
+from kavach import config
 from kavach.data.load import load_raw
 from kavach.data.split import split
-from kavach.sentinel.rings import add_ring_features
-from kavach.features.base import make_xy
 from kavach.detect.train import train
 from kavach.eval.metrics import summary
+from kavach.features.base import make_xy
 from kavach.policy.costs import amounts_inr
-from kavach.policy.decide import optimise, cost_three_way, summarise
-from kavach import config
+from kavach.policy.decide import cost_three_way, optimise
+from kavach.sentinel.rings import add_ring_features
 
 t0 = time.time()
 df = add_ring_features(load_raw())
-print("ring features built in %.0fs -> %d cols" % (time.time() - t0, df.shape[1]))
+print(f"ring features built in {time.time() - t0:.0f}s -> {df.shape[1]} cols")
 df.to_parquet(config.DATA_PROCESSED / "features_rings.parquet", index=False)
 
 tr, va, te = split(df)
 m = train(tr, va)
 m.save_model("models/rings.txt")
-print("trained %d trees in %.0fs" % (m.best_iteration, time.time() - t0))
+print(f"trained {m.best_iteration} trees in {time.time() - t0:.0f}s")
 
 Xte, yte = make_xy(te); yte = yte.to_numpy()
 Xva, yva = make_xy(va); yva = yva.to_numpy()
@@ -45,7 +45,7 @@ for nm, pv, pt in (("detector only", p_base_va, p_base_te),
                    ("detector + rings", p_ring_va, p_ring_te)):
     lo, hi, _ = optimise(yva, pv, ava, max_stepup_rate=0.10)
     c = cost_three_way(yte, pt, ate, lo, hi)
-    print("  %-18s cost/10k Rs %9.0f | saves Rs %9.0f" % (nm, c/n*1e4, (approve_all-c)/n*1e4))
+    print(f"  {nm:<18} cost/10k Rs {c/n*1e4:9.0f} | saves Rs {(approve_all-c)/n*1e4:9.0f}")
 
 imp = pd.Series(m.feature_importance("gain"), index=m.feature_name()).sort_values(ascending=False)
 ring_cols = [c for c in imp.index if c.startswith("ring__")]

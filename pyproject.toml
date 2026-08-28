@@ -25,3 +25,12 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "PIE", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# Report generators use compact one-line plotting statements on purpose.
+"scripts/*" = ["E702", "E501"]

@@ -9,7 +9,6 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from kavach import config
 from kavach.policy.costs import realised_cost
 
 

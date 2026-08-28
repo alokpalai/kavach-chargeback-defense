@@ -15,7 +15,9 @@ import pandas as pd
 # increases, so a tree would happily split on "timestamp > X" and score well
 # in-sample while learning nothing that survives into next month. Cyclical
 # time-of-day and day-of-week do generalise, so we derive those instead.
-DROP_COLS = ["TransactionID", "isFraud", "TransactionDT", "day"]
+# uid is dropped as a raw column: ~100k levels is useless to a tree.
+# Its value is in the velocity aggregates keyed on it.
+DROP_COLS = ["TransactionID", "isFraud", "TransactionDT", "day", "uid"]
 
 
 def add_time_features(df: pd.DataFrame) -> pd.DataFrame:

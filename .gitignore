@@ -20,6 +20,9 @@ models/
 # Notebooks
 .ipynb_checkpoints/
 
+# Tooling
+.claude/
+
 # OS / editor
 .DS_Store
 Thumbs.db

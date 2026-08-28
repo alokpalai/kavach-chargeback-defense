@@ -29,3 +29,7 @@ Thumbs.db
 .vscode/
 
 *.egg-info/
+
+# Derived scores only (no raw fields) - committed so the hosted dashboard
+# can boot on Streamlit Cloud. Must sit after the *.parquet rule above.
+!data/processed/dashboard.parquet

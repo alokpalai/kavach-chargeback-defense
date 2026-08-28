@@ -60,6 +60,11 @@ for row, idx in enumerate(top):
     )
 frame["top_reasons"] = reasons
 
+# Persist only the columns the dashboard actually reads. card / device / email
+# are raw IEEE-CIS values with no use in the app, and this file is committed so
+# the hosted dashboard can boot - it should carry as little source data as it can.
+frame = frame[["score", "is_fraud", "amount_inr", "top_reasons"]]
+
 config.DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
 frame.to_parquet(OUT, index=False)
 print(f"wrote {OUT}  rows={len(frame)}  explained={TOP_N_EXPLAINED}")

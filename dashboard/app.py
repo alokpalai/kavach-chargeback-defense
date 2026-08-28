@@ -25,6 +25,13 @@ st.set_page_config(page_title="Kavach", page_icon="🛡️", layout="wide")
 
 @st.cache_data
 def load() -> pd.DataFrame:
+    if not DATA.exists():
+        st.error(
+            f"Scored data not found at `{DATA}`. "
+            "Run `python scripts/prepare_dashboard.py` to generate it — it needs "
+            "the IEEE-CIS data in `data/raw/` and a trained model in `models/`."
+        )
+        st.stop()
     return pd.read_parquet(DATA)
 
 

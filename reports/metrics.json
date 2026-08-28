@@ -1,0 +1,164 @@
+{
+  "generated_at": "2026-08-28 20:51",
+  "seed": 42,
+  "dataset": {
+    "source": "IEEE-CIS Fraud Detection (Kaggle)",
+    "rows": 590540,
+    "columns": 435,
+    "span_days": 182.0,
+    "fraud_rate": 0.035
+  },
+  "split": [
+    {
+      "split": "train",
+      "rows": 410601,
+      "day_min": 1.0,
+      "day_max": 120.0,
+      "positive_rate": 0.0351
+    },
+    {
+      "split": "val",
+      "rows": 58776,
+      "day_min": 120.0,
+      "day_max": 140.0,
+      "positive_rate": 0.0352
+    },
+    {
+      "split": "test",
+      "rows": 78542,
+      "day_min": 155.0,
+      "day_max": 183.0,
+      "positive_rate": 0.0353
+    }
+  ],
+  "split_policy": {
+    "type": "temporal",
+    "train_end_day": 120,
+    "val_end_day": 140,
+    "embargo_days": 15,
+    "test_start_day": 155,
+    "embargo_rows_discarded": 42621
+  },
+  "cost_model": {
+    "usd_to_inr": 88.0,
+    "gross_margin": 0.25,
+    "dispute_fee_inr": 1500.0,
+    "ops_cost_per_dispute_inr": 300.0,
+    "churn_cost_inr": 500.0,
+    "stepup_abandon_rate": 0.08,
+    "stepup_fraud_block_rate": 0.85
+  },
+  "detector": {
+    "model": "LightGBM",
+    "trees": 903,
+    "val": {
+      "model": "val",
+      "pr_auc": 0.6816,
+      "recall@prec50": 0.7026,
+      "recall@prec60": 0.6543,
+      "recall@prec70": 0.5832,
+      "prec@1000": 0.891
+    },
+    "test": {
+      "model": "test",
+      "pr_auc": 0.5296,
+      "recall@prec50": 0.5148,
+      "recall@prec60": 0.4564,
+      "recall@prec70": 0.4009,
+      "prec@1000": 0.832
+    }
+  },
+  "policies": {
+    "approve_everything": {
+      "cost_per_10k_inr": 5436325,
+      "saved_vs_approve_all_per_10k_inr": 0,
+      "params": null
+    },
+    "binary_naive_0.50": {
+      "cost_per_10k_inr": 4197756,
+      "saved_vs_approve_all_per_10k_inr": 1238569,
+      "params": {
+        "t": 0.5
+      }
+    },
+    "binary_cost_optimal": {
+      "cost_per_10k_inr": 3749439,
+      "saved_vs_approve_all_per_10k_inr": 1686886,
+      "params": {
+        "t": 0.0904
+      }
+    },
+    "three_way": {
+      "cost_per_10k_inr": 2066945,
+      "saved_vs_approve_all_per_10k_inr": 3369380,
+      "params": {
+        "t_low": 0.0146,
+        "t_high": 0.436
+      }
+    },
+    "three_way_stepup_capped_10pct": {
+      "cost_per_10k_inr": 2158374,
+      "saved_vs_approve_all_per_10k_inr": 3277951,
+      "params": {
+        "t_low": 0.0232,
+        "t_high": 0.436
+      }
+    }
+  },
+  "headline_saving_per_10k_inr": 3277951,
+  "decision_mix_capped": [
+    {
+      "decision": "approve",
+      "share": 0.8782,
+      "n": 68975,
+      "fraud_rate": 0.0102
+    },
+    {
+      "decision": "step_up",
+      "share": 0.106,
+      "n": 8327,
+      "fraud_rate": 0.1332
+    },
+    {
+      "decision": "block",
+      "share": 0.0158,
+      "n": 1240,
+      "fraud_rate": 0.7766
+    }
+  ],
+  "optimism_penalty": {
+    "note": "threshold chosen on val vs the best achievable had we tuned on test",
+    "val_selected_cost_per_10k_inr": 3749439,
+    "test_tuned_cost_per_10k_inr": 3612262,
+    "penalty_pct": 3.8
+  },
+  "ablations": [
+    {
+      "model": "detector only",
+      "pr_auc": 0.5296,
+      "recall@prec50": 0.5148,
+      "recall@prec60": 0.4564,
+      "recall@prec70": 0.4009,
+      "prec@1000": 0.832,
+      "verdict": "shipped"
+    },
+    {
+      "model": "+ velocity",
+      "pr_auc": 0.5355,
+      "recall@prec50": 0.5299,
+      "recall@prec60": 0.4582,
+      "recall@prec70": 0.4048,
+      "prec@1000": 0.834,
+      "verdict": "rejected - no measurable gain"
+    },
+    {
+      "model": "+ rings",
+      "pr_auc": 0.5327,
+      "recall@prec50": 0.5321,
+      "recall@prec60": 0.4571,
+      "recall@prec70": 0.394,
+      "prec@1000": 0.832,
+      "verdict": "rejected - no measurable gain"
+    }
+  ]
+}

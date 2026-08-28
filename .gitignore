@@ -1,0 +1,26 @@
+# Environment
+.venv/
+__pycache__/
+*.py[cod]
+.env
+
+# Data — never commit these
+data/raw/*
+data/interim/*
+data/processed/*
+!data/**/.gitkeep
+*.csv
+*.parquet
+
+# Models
+models/
+*.pkl
+*.txt.model
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

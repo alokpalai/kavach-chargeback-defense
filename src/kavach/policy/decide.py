@@ -66,16 +66,29 @@ def optimise(
     p: np.ndarray,
     amount_inr: np.ndarray,
     n_points: int = 60,
+    max_stepup_rate: float | None = None,
+    max_block_rate: float | None = None,
 ) -> tuple[float, float, float]:
     """Grid-search (t_low, t_high) on the split it is given.
 
     Must be called on validation, never on test - the pair is a fitted
     parameter like any other.
+
+    The optional rate caps exist because pure cost minimisation will happily
+    challenge a quarter of all traffic. No merchant will accept that, whatever
+    the arithmetic says: checkout friction has a reputational cost this model
+    cannot see, and risk teams run under an agreed operational budget. The caps
+    make the policy something you could actually put in front of a merchant.
     """
     grid = np.unique(np.quantile(p, np.linspace(0.50, 0.9995, n_points)))
     best = (None, None, np.inf)
     for i, lo in enumerate(grid):
         for hi in grid[i:]:
+            d = decide(p, lo, hi)
+            if max_stepup_rate is not None and (d == STEP_UP).mean() > max_stepup_rate:
+                continue
+            if max_block_rate is not None and (d == BLOCK).mean() > max_block_rate:
+                continue
             c = cost_three_way(y_true, p, amount_inr, lo, hi)
             if c < best[2]:
                 best = (float(lo), float(hi), c)
